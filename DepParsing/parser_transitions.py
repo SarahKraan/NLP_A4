@@ -17,6 +17,7 @@ class PartialParse(object):
         """
         # The sentence being parsed is kept for bookkeeping purposes. Do NOT alter it in your code.
         self.sentence = sentence
+        # print(self.sentence)
 
         ### YOUR CODE HERE (3 Lines)
         ### Your code should initialize the following fields:
@@ -32,7 +33,9 @@ class PartialParse(object):
         ### Note: If you need to use the sentence object to initialize anything, make sure to not directly 
         ###       reference the sentence object.  That is, remember to NOT modify the sentence object. 
 
-
+        self.stack = ['ROOT']
+        self.buffer = list(sentence) # make copy so original sentence doesn't get modified
+        self.dependencies = []
         ### END YOUR CODE
 
 
@@ -50,6 +53,28 @@ class PartialParse(object):
         ###         1. Shift
         ###         2. Left Arc
         ###         3. Right Arc
+        # print(f'self.stack = {self.stack}')
+        # print(f'self.buffer = {self.buffer}')
+        # print(f'self.dependencies = {self.dependencies}')
+        # print(f'sentence = {self.sentence}')
+
+        if transition == "S":
+            # print(f'transition {transition}')
+            trans_word = self.buffer.pop(0)
+            self.stack.append(trans_word)
+            # print(f'trans word is {trans_word}')
+
+        elif transition == "LA":
+            # print(f'transition {transition}')
+            self.dependencies.append((self.stack[-1], self.stack[-2]))
+            trans_word = self.stack.pop(-2)
+            # print(f'trans word is {trans_word}')
+        
+        elif transition == "RA":
+            # print(f'transition {transition}')
+            self.dependencies.append((self.stack[-2], self.stack[-1]))
+            trans_word = self.stack.pop()
+            # print(f'trans word is {trans_word}')
 
 
         ### END YOUR CODE
