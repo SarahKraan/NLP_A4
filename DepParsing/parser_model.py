@@ -40,11 +40,11 @@ class ParserModel(nn.Module):
         @param dropout_prob (float): dropout probability
         """
         super(ParserModel, self).__init__()
-        self.n_features = n_features
-        self.n_classes = n_classes
-        self.dropout_prob = dropout_prob
-        self.embed_size = embeddings.shape[1]
-        self.hidden_size = hidden_size
+        self.n_features = n_features                # w size
+        self.n_classes = n_classes                  # y size
+        self.dropout_prob = dropout_prob            
+        self.embed_size = embeddings.shape[1]       # x size?
+        self.hidden_size = hidden_size              # l size
         self.embeddings = nn.Parameter(torch.tensor(embeddings))
 
         ### YOUR CODE HERE (~9-10 Lines)
@@ -72,6 +72,31 @@ class ParserModel(nn.Module):
         ### 
         ### See the PDF for hints.
 
+        ###     1) Declare `self.embed_to_hidden_weight` and `self.embed_to_hidden_bias` as `nn.Parameter`.
+        ###        Initialize weight with the `nn.init.xavier_uniform_` function and bias with `nn.init.uniform_`
+        ###        with default parameters.
+
+        # Dit is volgens mij W en b1
+        # NOTE: goed naar dimensies kijken en niet helemaal sure over nn.Parameter()
+        # NOTE: niet helemaal sure van de input dimensie
+        self.embed_to_hidden_weight = nn.Parameter(torch.empty(self.embed_size, self.hidden_size))
+        nn.init.xavier_normal_(self.embed_to_hidden_weight)
+        
+        self.embed_to_hidden_bias = nn.Parameter(torch.empty(self.hidden_size))
+        nn.init.uniform_(self.embed_to_hidden_bias)
+
+        ###     2) Construct `self.dropout` layer.
+        self.dropout = nn.Dropout(self.dropout_prob)
+
+        ###     3) Declare `self.hidden_to_logits_weight` and `self.hidden_to_logits_bias` as `nn.Parameter`.
+        ###        Initialize weight with the `nn.init.xavier_uniform_` function and bias with `nn.init.uniform_`
+        ###        with default parameters.
+
+        # NOTE: goed naar de dimensies kijken
+        self.hidden_to_logits_weight = nn.Parameter(torch.empty(self.hidden_size, self.n_classes))
+        nn.init.xavier_uniform_(self.hidden_to_logits_weight)
+        self.hidden_to_logits_bias = nn.Parameter(torch.empty(self.n_classes))
+        nn.init.uniform_(self.hidden_to_logits_bias)
 
 
 
@@ -106,6 +131,12 @@ class ParserModel(nn.Module):
         ###     View: https://pytorch.org/docs/stable/tensors.html#torch.Tensor.view
         ###     Flatten: https://pytorch.org/docs/stable/generated/torch.flatten.html
 
+        ###     1) For each index `i` in `w`, select `i`th vector from self.embeddings
+        for i in range(self.n_features):
+            emb_vec = torch.index_select(self.embeddings, 1, i)
+        
+        ###     2) Reshape the tensor using `view` function if necessary
+            
 
 
         ### END YOUR CODE
