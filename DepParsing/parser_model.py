@@ -77,9 +77,8 @@ class ParserModel(nn.Module):
         ###        with default parameters.
 
         # Dit is volgens mij W en b1
-        # NOTE: goed naar dimensies kijken en niet helemaal sure over nn.Parameter()
         # NOTE: niet helemaal sure van de input dimensie
-        self.embed_to_hidden_weight = nn.Parameter(torch.empty(self.embed_size, self.hidden_size))
+        self.embed_to_hidden_weight = nn.Parameter(torch.empty(self.n_features, self.hidden_size))
         nn.init.xavier_normal_(self.embed_to_hidden_weight)
         
         self.embed_to_hidden_bias = nn.Parameter(torch.empty(self.hidden_size))
@@ -97,8 +96,6 @@ class ParserModel(nn.Module):
         nn.init.xavier_uniform_(self.hidden_to_logits_weight)
         self.hidden_to_logits_bias = nn.Parameter(torch.empty(self.n_classes))
         nn.init.uniform_(self.hidden_to_logits_bias)
-
-
 
         ### END YOUR CODE
 
@@ -132,8 +129,14 @@ class ParserModel(nn.Module):
         ###     Flatten: https://pytorch.org/docs/stable/generated/torch.flatten.html
 
         ###     1) For each index `i` in `w`, select `i`th vector from self.embeddings
-        for i in range(self.n_features):
+        print(w.shape)
+
+        # NOTE: weten niet zeker of de range waarover we loopen goed is
+        for i in range(len(w[1])):
+
+            print(self.embeddings.shape)
             emb_vec = torch.index_select(self.embeddings, 1, i)
+
         
         ###     2) Reshape the tensor using `view` function if necessary
             
