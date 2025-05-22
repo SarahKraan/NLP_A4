@@ -78,7 +78,7 @@ class ParserModel(nn.Module):
 
         # Dit is volgens mij W en b1
         # NOTE: niet helemaal sure van de input dimensie
-        self.embed_to_hidden_weight = nn.Parameter(torch.empty(self.n_features, self.hidden_size))
+        self.embed_to_hidden_weight = nn.Parameter(torch.empty(self.n_features * self.embed_size, self.hidden_size))
         nn.init.xavier_normal_(self.embed_to_hidden_weight)
         
         self.embed_to_hidden_bias = nn.Parameter(torch.empty(self.hidden_size))
@@ -180,8 +180,16 @@ class ParserModel(nn.Module):
         ### Please see the following docs for support:
         ###     Matrix product: https://pytorch.org/docs/stable/torch.html#torch.matmul
         ###     ReLU: https://pytorch.org/docs/stable/nn.html?highlight=relu#torch.nn.functional.relu
+        
+        x = self.embedding_lookup(w)
+    
+        # h = ReLU(xW + b1)
+        h = torch.relu(torch.matmul(x, self.embed_to_hidden_weight) + self.embed_to_hidden_bias)
+        h = self.dropout(h)
 
-
+        # l = hU + b2
+        logits = torch.matmul(h, self.hidden_to_logits_weight) + self.hidden_to_logits_bias
+       
         ### END YOUR CODE
         return logits
 
