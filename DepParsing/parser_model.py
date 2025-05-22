@@ -132,14 +132,18 @@ class ParserModel(nn.Module):
         print(w.shape)
 
         # NOTE: weten niet zeker of de range waarover we loopen goed is
-        for i in range(len(w[1])):
+        # for i in range(len(w[1])):
 
-            print(self.embeddings.shape)
-            emb_vec = torch.index_select(self.embeddings, 1, i)
+        #     print(self.embeddings.shape)
+        #     emb_vec = torch.index_select(self.embeddings, 1, i)
+
+        x = self.embeddings[w]
 
         
         ###     2) Reshape the tensor using `view` function if necessary
-            
+        
+        x = x.view(x.size(0), -1)
+        print(x.shape)
 
 
         ### END YOUR CODE
