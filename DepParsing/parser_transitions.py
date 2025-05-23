@@ -111,7 +111,7 @@ def minibatch_parse(sentences, model, batch_size):
                                                     same as in sentences (i.e., dependencies[i] should
                                                     contain the parse for sentences[i]).
     """
-    print(f'sentences are {sentences}')
+    # print(f'sentences are {sentences}')
     dependencies = []
 
     ### YOUR CODE HERE (~8-10 Lines)
@@ -145,22 +145,22 @@ def minibatch_parse(sentences, model, batch_size):
     partial_parses = []
     for sentence in sentences:
         partial_parses.append(PartialParse(sentence))
-    print(f'partial parse {partial_parses[0].buffer}')
+    # print(f'partial parse {partial_parses[0].buffer}')
 
     # Initialize unfinished parses as a shallow copy of partial parses
     unfinished_parses = partial_parses[:]
-    print(f'unfinished parses {unfinished_parses[0].buffer}')
-    print(f'len unfinished parses {len(unfinished_parses)}')
+    # print(f'unfinished parses {unfinished_parses[0].buffer}')
+    # print(f'len unfinished parses {len(unfinished_parses)}')
 
     # while unfinished parses is not empty do
     while len(unfinished_parses) > 0:
-        print('opnieuw in while loop!')
+        # print('opnieuw in while loop!')
         # Take the first batch size parses in unfinished parses as a minibatch
         mini_batch = unfinished_parses[:batch_size]
-        print(f'len minibatch {len(mini_batch)}')
-        for batch in mini_batch:
-            print(f'mini batch buffer {batch.buffer}')
-            print(f'mini batch stack {batch.stack}')
+        # print(f'len minibatch {len(mini_batch)}')
+        # for batch in mini_batch:
+        #     print(f'mini batch buffer {batch.buffer}')
+        #     print(f'mini batch stack {batch.stack}')
 
         # Use the model to predict the next transition for each partial parse in the minibatch
         # for partial_parse in mini_batch:
@@ -168,7 +168,7 @@ def minibatch_parse(sentences, model, batch_size):
         #     transition = model.predict(partial_parse)
         
         transitions = model.predict(mini_batch)
-        print(f'transitions {transitions}')
+        # print(f'transitions {transitions}')
         
         # Perform a parse step on each partial parse in the minibatch with its predicted transition
         for i in range(len(mini_batch)):
@@ -180,7 +180,7 @@ def minibatch_parse(sentences, model, batch_size):
 
 
     dependencies = [parse.dependencies for parse in partial_parses]
-    print(f'dependencies is {dependencies}')
+    # print(f'dependencies is {dependencies}')
     ### END YOUR CODE
 
     return dependencies
@@ -275,7 +275,7 @@ def test_minibatch_parse():
                  ["left", "arcs", "only"],
                  ["left", "arcs", "only", "again"]]
     deps = minibatch_parse(sentences, DummyModel(), 2)
-    print(f'deps in test {deps}')
+    # print(f'deps in test {deps}')
     test_dependencies("minibatch_parse", deps[0],
                       (('ROOT', 'right'), ('arcs', 'only'), ('right', 'arcs')))
     test_dependencies("minibatch_parse", deps[1],

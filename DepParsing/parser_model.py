@@ -129,7 +129,7 @@ class ParserModel(nn.Module):
         ###     Flatten: https://pytorch.org/docs/stable/generated/torch.flatten.html
 
         ###     1) For each index `i` in `w`, select `i`th vector from self.embeddings
-        print(w.shape)
+        # print(w.shape)
 
         # NOTE: weten niet zeker of de range waarover we loopen goed is
         # for i in range(len(w[1])):
@@ -143,7 +143,7 @@ class ParserModel(nn.Module):
         ###     2) Reshape the tensor using `view` function if necessary
         
         x = x.view(x.size(0), -1)
-        print(x.shape)
+        # print(x.shape)
 
 
         ### END YOUR CODE
