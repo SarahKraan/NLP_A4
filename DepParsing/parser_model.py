@@ -72,28 +72,24 @@ class ParserModel(nn.Module):
         ### 
         ### See the PDF for hints.
 
-        ###     1) Declare `self.embed_to_hidden_weight` and `self.embed_to_hidden_bias` as `nn.Parameter`.
-        ###        Initialize weight with the `nn.init.xavier_uniform_` function and bias with `nn.init.uniform_`
-        ###        with default parameters.
-
-        # Dit is volgens mij W en b1
-        # NOTE: niet helemaal sure van de input dimensie
+        # Declare `self.embed_to_hidden_weight` and `self.embed_to_hidden_bias` as `nn.Parameter`.
+        # Initialize weight with the `nn.init.xavier_uniform_` function and bias with `nn.init.uniform_`
+        # with default parameters.
         self.embed_to_hidden_weight = nn.Parameter(torch.empty(self.n_features * self.embed_size, self.hidden_size))
         nn.init.xavier_normal_(self.embed_to_hidden_weight)
         
         self.embed_to_hidden_bias = nn.Parameter(torch.empty(self.hidden_size))
         nn.init.uniform_(self.embed_to_hidden_bias)
 
-        ###     2) Construct `self.dropout` layer.
+        # Construct `self.dropout` layer.
         self.dropout = nn.Dropout(self.dropout_prob)
 
-        ###     3) Declare `self.hidden_to_logits_weight` and `self.hidden_to_logits_bias` as `nn.Parameter`.
-        ###        Initialize weight with the `nn.init.xavier_uniform_` function and bias with `nn.init.uniform_`
-        ###        with default parameters.
-
-        # NOTE: goed naar de dimensies kijken
+        # Declare `self.hidden_to_logits_weight` and `self.hidden_to_logits_bias` as `nn.Parameter`.
+        # Initialize weight with the `nn.init.xavier_uniform_` function and bias with `nn.init.uniform_`
+        # with default parameters.
         self.hidden_to_logits_weight = nn.Parameter(torch.empty(self.hidden_size, self.n_classes))
         nn.init.xavier_uniform_(self.hidden_to_logits_weight)
+
         self.hidden_to_logits_bias = nn.Parameter(torch.empty(self.n_classes))
         nn.init.uniform_(self.hidden_to_logits_bias)
 
@@ -128,23 +124,11 @@ class ParserModel(nn.Module):
         ###     View: https://pytorch.org/docs/stable/tensors.html#torch.Tensor.view
         ###     Flatten: https://pytorch.org/docs/stable/generated/torch.flatten.html
 
-        ###     1) For each index `i` in `w`, select `i`th vector from self.embeddings
-        # print(w.shape)
-
-        # NOTE: weten niet zeker of de range waarover we loopen goed is
-        # for i in range(len(w[1])):
-
-        #     print(self.embeddings.shape)
-        #     emb_vec = torch.index_select(self.embeddings, 1, i)
-
+        # For each index `i` in `w`, select `i`th vector from self.embeddings
         x = self.embeddings[w]
 
-        
-        ###     2) Reshape the tensor using `view` function if necessary
-        
+        # Reshape the tensor using `view` function if necessary
         x = x.view(x.size(0), -1)
-        # print(x.shape)
-
 
         ### END YOUR CODE
         return x
@@ -181,13 +165,14 @@ class ParserModel(nn.Module):
         ###     Matrix product: https://pytorch.org/docs/stable/torch.html#torch.matmul
         ###     ReLU: https://pytorch.org/docs/stable/nn.html?highlight=relu#torch.nn.functional.relu
         
+        # Initialize x
         x = self.embedding_lookup(w)
     
-        # h = ReLU(xW + b1)
+        # Forward computation: h = ReLU(xW + b1) and dropout
         h = torch.relu(torch.matmul(x, self.embed_to_hidden_weight) + self.embed_to_hidden_bias)
         h = self.dropout(h)
 
-        # l = hU + b2
+        # Continue forward computation: l = hU + b2
         logits = torch.matmul(h, self.hidden_to_logits_weight) + self.hidden_to_logits_bias
        
         ### END YOUR CODE
